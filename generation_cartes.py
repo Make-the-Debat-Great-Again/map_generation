@@ -22,22 +22,14 @@ vlayer_motifs = iface.addVectorLayer(uri,"motifs","delimitedtext")
 
 # Import d'OSM (rail)
 datadirosm = datadir+'/cartes/OSM'
+vlayer_rail = list()
+print('Chargement des fichiers de '+datadirosm)
 for f in os.listdir(datadirosm):
     if not os.path.isfile(os.path.join(datadirosm,f)):
         path_osm = os.path.join(datadirosm,f,'gis_osm_railways_free_1.shp')
-        vlayer_rail = iface.addVectorLayer(path_osm,f,'ogr')
+        vlayer_rail.append(iface.addVectorLayer(path_osm,f,'ogr'))
 
 # Symbologie
-#expression1 = QgsExpression("""if("aires_ur_2" = 'Communes isolées hors influence des pôles' or "aires_ur_2" = 'Autre multipolarisé' or "aires_ur_2" = 'Multipolarisé des grands pôles' or "aires_ur_2" is null, "aires_ur_2", 'Pôle'""")
-#context = QgsExpressionContext()
-#context.appendScopes(QgsExpressionContextUtils.globalProjectLayerScopes(vlayer_airesurb))
-#with edit(vlayer_airesurb):
-#    for f in vlayer_airesurb.getFeatures():
-#        context.setFeature(f)
-#        f['aires_ur_2'] = expression1.evaluate(context)
-#        vlayer_airesurb.updateFeature(f)
-#        print(f['aires_ur_2'])
-# Ne pas décommenter ci dessus, c'est un gros fail
 
 categorized_renderer = QgsCategorizedSymbolRenderer()
 symbol1 = QgsFillSymbol()
@@ -63,5 +55,22 @@ categorized_renderer.addCategory(cat3)
 categorized_renderer.addCategory(cat4)
 categorized_renderer.addCategory(cat5)
 
-categorized_renderer.setClassAttribute('new_col')
+categorized_renderer.setClassAttribute('aires_ur_2')
 vlayer_airesurb.setRenderer(categorized_renderer)
+
+categorized_renderer_r = QgsCategorizedSymbolRenderer()
+symbolr = QgsLineSymbol()
+symbolr.setColor(QtGui.QColor('#000000'))
+catr = QgsRendererCategory('rail', symbolr, 'rail')
+categorized_renderer_r.addCategory(catr)
+categorized_renderer_r.setClassAttribute('fclass')
+for vlayer in vlayer_rail:
+    vlayer.setRenderer(categorized_renderer_r)
+
+symbol = QgsMarkerSymbol.createSimple({'name': 'circle', 'color': 'orange'})
+vlayer_motifs.renderer().setSymbol(symbol)
+vlayer_motifs.triggerRepaint()
+
+
+
+    
