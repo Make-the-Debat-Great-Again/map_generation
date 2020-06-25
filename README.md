@@ -10,3 +10,5 @@ Téléchargez le dossier 'Data_transports'.
 Avant d'éxecuter le script, indiquez l'emplacement de Data_transports :
 
 ligne 8 - datadir = 'C:/le_dossier_dans_lequel_est_Data_Transport'
+
+/!\ Il n'y a que les données de haute normandie dans le dossier OSM. Pour obtenir d'autres régions, rendez vous sur le site : https://download.geofabrik.de/europe/france.html puis téléchargez les données et dézippez dans le dossier OSM.
