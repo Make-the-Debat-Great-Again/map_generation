@@ -5,10 +5,10 @@ import os
 from qgis.PyQt import QtGui
 
 #print('import des librairies')
+datadir = 'E:/Documents/Recherche/GDN'
 
 # Import des aires urbaines
-datadir = "E:/Documents/Recherche/GDN/Résultats_transports"
-path_airesurb = os.path.join(datadir,'cartes','aires_urbaines.shp')
+path_airesurb = os.path.join(datadir,'Data_transports','aires_urbaines.shp')
 
 print('chargement de ' + path_airesurb) 
 vlayer_airesurb = iface.addVectorLayer(path_airesurb,'','ogr')
@@ -16,12 +16,12 @@ if not vlayer_airesurb.isValid() :
     print("erreur : couche non chargee")
 
 # Import des motifs
-print('chargement de E:/Documents/Recherche/GDN/Résultats_transports/cooc_data_withgeoms.csv')
-uri = "file:///E:/Documents/Recherche/GDN/R%C3%A9sultats_transports/cooc_data_withgeoms.csv?type={}&delimiter={}&detectTypes={}&wktField={}&crs={}&spatialIndex={}&subsetIndex={}&watchFile={}".format("csv",";","yes","geom","EPSG:4326","no","no","no")
+print('chargement de ' + datadir +'/Data_transports/cooc_data_withgeoms.csv')
+uri = "file:///"+datadir+"/Data_transports/cooc_data_withgeoms.csv?type={}&delimiter={}&detectTypes={}&wktField={}&crs={}&spatialIndex={}&subsetIndex={}&watchFile={}".format("csv",";","yes","geom","EPSG:4326","no","no","no")
 vlayer_motifs = iface.addVectorLayer(uri,"motifs","delimitedtext")
 
 # Import d'OSM (rail)
-datadirosm = datadir+'/cartes/OSM'
+datadirosm = datadir+'/Data_transports/OSM'
 vlayer_rail = list()
 print('Chargement des fichiers de '+datadirosm)
 for f in os.listdir(datadirosm):
