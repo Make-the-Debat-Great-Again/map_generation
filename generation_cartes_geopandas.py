@@ -24,8 +24,8 @@ def select_motifs(motifs,list_change,list_attribut,list_transport):
     newarr = motifs[filter_arr]
     return newarr
 
-theme = 'développement des trains'
-#theme = 'développement des pistes cyclables'
+#theme = 'développement des trains'
+theme = 'développement des pistes cyclables'
 
 # LOAD DATA
 print("Loading Data...")
@@ -64,18 +64,21 @@ if (theme == 'développement des trains'):
     
     print("- Add RailRoad...")
     railroad.plot(ax=ax,color='red',linewidth=0.5)
+    
+    label_lignes = 'voie ferrée'
 elif (theme == 'développement des pistes cyclables') :
     bikeway = geopandas.read_file("bikeway_fr.geojson")
     
     #motifs
     list_change = ['augmenter','construire','créer','développer','hausser']
     list_attribut = ['nombre','fréquence','quantité','rapidité','vitesse',None]
-    list_transport = ['ferroviaire','gare','ligne de train','petite ligne','ter','tgv','train','voie de chemin de f']
+    list_transport = ['piste cyclable','voie cyclable','vélo','bande cyclable']
     motifs = select_motifs(motifs,list_change,list_attribut,list_transport)
     
     print("- Add BikeWay...")
     bikeway.plot(ax=ax,color='red',linewidth=0.5)
-
+    
+    label_lignes = 'piste cyclable'
 print("- Add Patterns...")
 motifs.plot(ax=ax,markersize=0.2,color="orange")
 
@@ -99,8 +102,8 @@ print("- Add Legend...")
 cmap = matplotlib.cm.get_cmap('Blues')
 norm = matplotlib.colors.Normalize(vmin=0, vmax=3)
 
-legend_elements = [Line2D([0], [0], color='r', lw=4, label='Railroad'),
-                   Line2D([0], [0], marker='o', color='w', label='Motif',
+legend_elements = [Line2D([0], [0], color='r', lw=4, label=label_lignes),
+                   Line2D([0], [0], marker='o', color='w', label='Motif de '+theme,
                           markerfacecolor='orange', markersize=15),
                    Patch(facecolor="white", edgecolor='white',
                          label='$\\bf{Aires}$ $\\bf{urbaines}$'),
