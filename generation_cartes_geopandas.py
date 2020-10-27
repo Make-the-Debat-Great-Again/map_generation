@@ -89,7 +89,7 @@ ax.set_ylim((6e6,7.25e6))
 
 print("- Add Scalebar and North Arrow...")
 # SCALE BAR AND NORTH ARROW
-scale_bar(ax, [0.6,0.05], 100)
+scale_bar(ax, [0.6,0.05], 200,text_kwargs=dict(fontsize="22")) # changer fontsize pour la taille de la police
 
 x, y, arrow_length = 0.1, 0.7, 0.05
 ax.annotate('N', xy=(x, y), xytext=(x, y-arrow_length),
@@ -115,7 +115,9 @@ legend_elements = [Line2D([0], [0], color='r', lw=4, label=label_lignes),
                          label='Multipolarisé des grands pôles'),
                    Patch(facecolor=cmap(norm(3)), edgecolor='gray',
                          label='Pôle')]
-ax.legend(handles=legend_elements, loc='right',title="Légende")
+
+legend = ax.legend(handles=legend_elements, loc='right',title="Légende",fontsize="16") # changer fontsize pour la taille de la police
+legend.get_title().set_fontsize('18') # Augmenter ou diminuer valeur pour la taille de la police du titre de la légende
 
 print("DONE !")
 # SAVE FIGURE TO PDF
