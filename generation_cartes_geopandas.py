@@ -7,6 +7,7 @@ import cartopy.crs as ccrs
 import matplotlib.pyplot as plt
 from matplotlib.patches import Patch
 from matplotlib.lines import Line2D
+import matplotlib.patheffects as path_effects
 import matplotlib
 
 from shapely.geometry import Polygon
@@ -118,8 +119,8 @@ communes = geopandas.read_file("communes_importantes.geojson")
 polygon = Polygon([(xmin, ymin), (xmin, ymax), (xmax, ymax), (xmax, ymin)])
 communes_clipped = geopandas.clip(communes, polygon)
 for idx, row in communes_clipped.iterrows():
-    ax.annotate(s=row['nom_commun'], xy=[row['geometry'].representative_point().x,row['geometry'].representative_point().y],horizontalalignment='center')
-
+    text = ax.text(row['geometry'].representative_point().x, row['geometry'].representative_point().y, row['nom_commun'], color='white',ha='center', va='center', size=20)
+    text.set_path_effects([path_effects.Stroke(linewidth=3, foreground='black'),path_effects.Normal()])
 print("- Add Cities' Names...")
 
 ax.axis("off")
