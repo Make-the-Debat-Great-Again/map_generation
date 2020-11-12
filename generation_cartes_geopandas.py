@@ -27,8 +27,8 @@ def select_motifs(motifs,list_change,list_attribut,list_transport):
     newarr = motifs[filter_arr]
     return newarr
 
-#theme = 'développement des trains'
-theme = 'développement des pistes cyclables'
+theme = 'développement des trains'
+#theme = 'développement des pistes cyclables'
 #area = 'France'
 area = 'Charente'
 
@@ -55,20 +55,11 @@ elif (area == 'Charente'):
 
 # LOAD DATA
 print("Loading Data...")
-aires_urbaines = geopandas.read_file("aires_urbaines.geojson")
+aires_urbaines = geopandas.read_file("au2010_carto.geojson")
 motifs =  geopandas.read_file("motifs_all.geojson")
 
 # URBAN AREA COLOR
-aires_urbaines["color"] = aires_urbaines.apply(lambda x: "Pôle" if x.aires_ur_2 not in "Autre multipolarisé;Communes isolées hors influence des pôles;Multipolarisé des grands pôles".split(";") else x.aires_ur_2,axis=1)
-def color_(x):
-    dic_ = {
-        "Autre multipolarisé":1,
-        "Communes isolées hors influence des pôles":0,
-        "Multipolarisé des grands pôles":2,
-        "Pôle":3
-    }
-    return dic_[x]
-aires_urbaines["color"] = aires_urbaines["color"].apply(color_)
+aires_urbaines["color"] = aires_urbaines.apply(lambda x: 4-int(x.GDN_CATEG),axis=1)
 
 print("Plotting...")
 
@@ -76,7 +67,7 @@ print("Plotting...")
 ax = plt.axes(projection=ccrs.LambertAzimuthalEqualArea())
 
 print("- Add Urban Area...")
-aires_urbaines.plot(column = "color",cmap="Blues",figsize=(40,20),edgecolor="grey",linewidth=0.2,ax=ax)
+aires_urbaines.plot(column = "color",cmap="Blues",figsize=(40,20),edgecolor="black",linewidth=1,ax=ax)
 
 # Thématiques
 if (theme == 'développement des trains'):
@@ -119,8 +110,11 @@ communes = geopandas.read_file("communes_importantes.geojson")
 polygon = Polygon([(xmin, ymin), (xmin, ymax), (xmax, ymax), (xmax, ymin)])
 communes_clipped = geopandas.clip(communes, polygon)
 for idx, row in communes_clipped.iterrows():
-    text = ax.text(row['geometry'].representative_point().x, row['geometry'].representative_point().y, row['nom_commun'], color='white',ha='center', va='center', size=20)
+    text = ax.text(row['geometry'].representative_point().x, row['geometry'].representative_point().y, row['nom_commun'], color='white',
+                          ha='center', va='center', size=20)
     text.set_path_effects([path_effects.Stroke(linewidth=3, foreground='black'),path_effects.Normal()])
+    #ax.annotate(s=row['nom_commun'], xy=[row['geometry'].representative_point().x,row['geometry'].representative_point().y],horizontalalignment='center')
+
 print("- Add Cities' Names...")
 
 ax.axis("off")
@@ -149,26 +143,26 @@ legend_elements = [Line2D([0], [0], color='r', lw=4, label=label_lignes),
                    Line2D([0], [0], marker='o', color='w', label='Motif de '+theme,
                           markerfacecolor='orange', markersize=15),
                    Patch(facecolor="white", edgecolor='white',
-                         label='$\\bf{Aires}$ $\\bf{urbaines}$'),
-                   Patch(facecolor=cmap(norm(0)), edgecolor='gray',
-                         label='Communes isolées hors influence des pôles'),
-                   Patch(facecolor=cmap(norm(1)), edgecolor='gray',
-                         label='Autre multipolarisé'),
-                   Patch(facecolor=cmap(norm(2)), edgecolor='gray',
-                         label='Multipolarisé des grands pôles'),
-                   Patch(facecolor=cmap(norm(3)), edgecolor='gray',
-                         label='Pôle')]
+                         label="$\\bf{Catégories}$ $\\bf{d'espaces}$"),
+                   Patch(facecolor=cmap(norm(0)), edgecolor='black',
+                         label='Hors influence des pôles'),
+                   Patch(facecolor=cmap(norm(1)), edgecolor='black',
+                         label='Petite ou moyenne aire'),
+                   Patch(facecolor=cmap(norm(2)), edgecolor='black',
+                         label='Périurbain'),
+                   Patch(facecolor=cmap(norm(3)), edgecolor='black',
+                         label='Pôle urbain')]
 
 if (theme == 'développement des trains'):
     legend_elements.insert(1,Line2D([0], [0], marker='o', color='w', label='Gares', markerfacecolor='red', markersize=15))
 
-legend = ax.legend(handles=legend_elements, loc='best',title="Légende",fontsize="16") # changer fontsize pour la taille de la police
-legend.get_title().set_fontsize('18') # Augmenter ou diminuer valeur pour la taille de la police du titre de la légende
+legend = ax.legend(handles=legend_elements, loc='best',title="Légende",fontsize="22") # changer fontsize pour la taille de la police
+legend.get_title().set_fontsize('24') # Augmenter ou diminuer valeur pour la taille de la police du titre de la légende
 
 print("DONE !")
 # SAVE FIGURE TO PNG
 fig = matplotlib.pyplot.gcf()
 fig.set_size_inches(40, 20)
-fig.savefig('carte1bis.png', dpi=300,bbox_inches="tight")
+fig.savefig('carte2bis.png', dpi=300,bbox_inches="tight")
 # SAVE FIGURE TO PDF
 #fig.savefig('carte2bis.pdf',bbox_inches='tight')
